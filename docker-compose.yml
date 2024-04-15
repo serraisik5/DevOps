@@ -44,6 +44,7 @@ services:
       - POSTGRES_PASSWORD=1234
     networks:
       - backend
+    restart: always
 
 networks:
   backend:
