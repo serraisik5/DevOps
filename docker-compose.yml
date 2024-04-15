@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+      - "81:81"
+    depends_on:
+      - service_b
+      - service_c
+    networks:
+      - frontend
+
+  service_b:
+    build: ./service_b
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+    networks:
+      - backend
+    depends_on:
+      - postgres
+
+  service_c:
+    build: ./service_c
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+    networks:
+      - backend
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=db350
+      - POSTGRES_USER=serra
+      - POSTGRES_PASSWORD=1234
+    networks:
+      - backend
+
+networks:
+  backend:
+    internal: true
+  frontend:
+    internal: false
+
+volumes:
+  postgres_data:
