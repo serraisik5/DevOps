@@ -13,7 +13,8 @@ services:
       - frontend
 
   service_b:
-    build: ./service_b
+    build:
+      context: ./service_b
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -23,7 +24,8 @@ services:
       - postgres
 
   service_c:
-    build: ./service_c
+    build:
+      context: ./service_c
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
