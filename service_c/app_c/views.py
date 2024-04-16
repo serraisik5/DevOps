@@ -1,11 +1,14 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from service_b.app_b.models import Person  
+from django.shortcuts import render, redirect
+from .models import Person  
 
-def list_names(request):
+def list_persons(request):
     persons = Person.objects.all()
-    return render(request, 'list_names.html', {'persons': persons})
+    return render(request, 'list.html', {'persons': persons})
 
 def delete_person(request, pk):
-    person = get_object_or_404(Person, pk=pk)
-    person.delete()
-    return redirect('list_names')
+    if request.method == 'POST':
+        person = Person.objects.get(pk=pk)
+        person.delete()
+        return redirect('list_persons')
+    else:
+        return redirect('list_persons')

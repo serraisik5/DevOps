@@ -14,7 +14,7 @@ def add_person(request):
     else:
         form = PersonForm()
 
-    return render(request, 'add_person.html', {'form': form})
+    return render(request, 'person.html', {'form': form})
 
 def success(request):
     total_records = Person.objects.count()

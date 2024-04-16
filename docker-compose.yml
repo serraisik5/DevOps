@@ -2,10 +2,12 @@ version: '3.8'
 
 services:
   nginx:
-    build: ./nginx
+    image: nginx:latest
     ports:
       - "80:80"
       - "81:81"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d #mounts the directory containing default.conf to the /etc/nginx/conf.d directory inside the Nginx container. This ensures custom configuration is used by Nginx.
     depends_on:
       - service_b
       - service_c
@@ -15,22 +17,32 @@ services:
   service_b:
     build:
       context: ./service_b
+      dockerfile: Dockerfile
+    command: gunicorn app_b.wsgi:application --bind 0.0.0.0:8000 #overides,  gives flexibility to alter behavior without needing to rebuild the image
+    volumes:
+      - ./service_b:/usr/src/app
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
     networks:
       - backend
+      - frontend
     depends_on:
       - postgres
 
   service_c:
     build:
       context: ./service_c
+      dockerfile: Dockerfile
+    command: gunicorn app_c.wsgi:application --bind 0.0.0.0:8001 #overides,  gives flexibility to alter behavior without needing to rebuild the image
+    volumes:
+      - ./service_c:/usr/src/app
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
     networks:
       - backend
+      - frontend
     depends_on:
       - postgres
 
@@ -39,18 +51,21 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=db350
-      - POSTGRES_USER=serra
-      - POSTGRES_PASSWORD=1234
+      - DB_HOST=postgres
+      - DB_NAME=db350
+      - DB_USER=serra
+      - DB_PASSWORD=1234
     networks:
       - backend
-    restart: always
+
 
 networks:
   backend:
-    internal: true
+    driver: bridge # allows both inter-container communication on the same host and can be configured to allow external access via port mappings
   frontend:
-    internal: false
+    driver: bridge
 
 volumes:
   postgres_data:
+
+# add .env for credentials

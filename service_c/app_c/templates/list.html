@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List Names</title>
+</head>
+<body>
+    <h2>Name List</h2>
+    <ul>
+        {% for person in persons %}
+        <li>
+            {{ person.id }} - {{ person.first_name }} {{ person.last_name }}
+            <form action="{% url 'delete_person' person.pk %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background: none; border: none; color: red; cursor: pointer;">x</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'list_persons' %}">Refresh List</a>
+</body>
+</html>
