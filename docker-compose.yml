@@ -51,10 +51,9 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
-      - DB_HOST=postgres
-      - DB_NAME=db350
-      - DB_USER=serra
-      - DB_PASSWORD=1234
+      - POSTGRES_DB=db350
+      - POSTGRES_USER=serra
+      - POSTGRES_PASSWORD=1234
     networks:
       - backend
 
