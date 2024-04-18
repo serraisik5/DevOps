@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   nginx:
     image: nginx:latest
@@ -17,9 +15,12 @@ services:
   service_b:
     build:
       context: ./service_b
-      dockerfile: Dockerfile
-    command: gunicorn app_b.wsgi:application --bind 0.0.0.0:8000 #overides,  gives flexibility to alter behavior without needing to rebuild the image
-    volumes:
+      dockerfile: Dockerfile 
+    command: > #overides,  gives flexibility to alter behavior without needing to rebuild the image
+      sh -c "python wait_for_db.py &&
+             python manage.py migrate &&
+             gunicorn app_b.wsgi:application --bind 0.0.0.0:8000" 
+    volumes: 
       - ./service_b:/usr/src/app
     environment:
       - DB_HOST=postgres
