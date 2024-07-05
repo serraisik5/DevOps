@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  control:
+    build:
+      context: ./
+      dockerfile: ./control/Dockerfile
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./control:/ansible
+    networks:
+      - mynetwork
+
+  managed1:
+    build:
+      context: ./
+      dockerfile: ./managed/Dockerfile
+    tty: true
+    stdin_open: true
+    ports:
+      - "8080:80"
+    networks:
+      - mynetwork
+
+  managed2:
+    build:
+      context: ./
+      dockerfile: ./managed/Dockerfile
+    tty: true
+    stdin_open: true
+    ports:
+      - "8081:80"
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
