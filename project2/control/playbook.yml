@@ -1,0 +1,35 @@
+- hosts: managed_nodes
+  become: yes
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+        force_apt_get: yes
+
+    - name: Setup virtual host
+      copy:
+        dest: /etc/nginx/sites-enabled/default
+        content: |
+          server {
+            listen 80;
+            server_name _;
+            location / {
+              root /var/www/html;
+              index index.html index.htm;
+            }
+          }
+
+    - name: Place index.html file
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head><title>Hello Ansible</title></head>
+          <body><h1>Welcome to Nginx on Docker via Ansible</h1></body>
+          </html>
+
+    - name: Start Nginx
+      command: service nginx start
+      ignore_errors: yes
